@@ -144,6 +144,49 @@ describe('Channel Routes', function () {
             });
         });
 
+        describe('JSONFeed', function () {
+            before(testUtils.teardown);
+
+            before(function (done) {
+                testUtils.initData().then(function () {
+                    return testUtils.fixtures.overrideOwnerUser();
+                }).then(function () {
+                    done();
+                });
+            });
+
+            after(testUtils.teardown);
+
+            it('should 301 redirect with CC=1year without slash', function (done) {
+                request.get('/feed.json')
+                    .expect('Location', '/feed.json/')
+                    .expect('Cache-Control', testUtils.cacheRules.year)
+                    .expect(301)
+                    .end(doEnd(done));
+            });
+
+            it('should respond with 200 & CC=public', function (done) {
+                request.get('/feed.json/')
+                    .expect('Content-Type', 'application/json; charset=utf-8')
+                    .expect('Cache-Control', testUtils.cacheRules.public)
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) {
+                            return done(err);
+                        }
+
+                        should.not.exist(res.headers['x-cache-invalidate']);
+                        should.not.exist(res.headers['X-CSRF-Token']);
+                        should.not.exist(res.headers['set-cookie']);
+                        should.exist(res.headers.date);
+                        // The remainder of the XML is tested in the unit/xml_spec.js
+                        res.text.should.match(/^{"version":"https:\/\/jsonfeed.org\/version\/1"/);
+
+                        done();
+                    });
+            });
+        });
+
         describe('Paged', function () {
             // Add enough posts to trigger pages for both the index (5 pp) and rss (15 pp)
             // insertPosts adds 11 published posts, 1 draft post, 1 published static page and one draft page
