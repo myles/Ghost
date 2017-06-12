@@ -14,7 +14,7 @@ var crypto = require('crypto'),
     generate,
     generateFeed,
     generateTags,
-    getFeedXml,
+    getFeedJson,
     feedCache = {};
 
 function isTag(req) {
@@ -80,6 +80,19 @@ getFeedJson = function getFeedJson(path, data) {
     return feedCache[path].json;
 };
 
+generateTags = function generateTags(data) {
+    if (data.tags) {
+        return data.tags.reduce(function (tags, tag) {
+            if (tag.visibility !== 'internal') {
+                tags.push(tag.name);
+            }
+            return tags;
+        }, []);
+    }
+
+    return [];
+};
+
 generateFeed = function generateFeed(data) {
     var feed = {
         version: 'https://jsonfeed.org/version/1',
@@ -123,7 +136,7 @@ generateFeed = function generateFeed(data) {
     return filters.doFilter('feedjson.feed', feed).then(function then(feed) {
         return feed;
     });
-}
+};
 
 generate = function generate(req, res, next) {
     // Initialize RSS
@@ -156,6 +169,6 @@ generate = function generate(req, res, next) {
             res.send(JSON.stringify(feedJson));
         });
     }).catch(handleError(next));
-}
+};
 
 module.exports = generate;
