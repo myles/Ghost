@@ -56,11 +56,11 @@ function getBaseUrl(req, slugParam) {
     var baseUrl = utils.url.getSubdir();
 
     if (isTag(req)) {
-        baseUrl = utils.url.urlJoin(baseUrl, config.get('routeKeywords').tag, slugParam, 'json');
+        baseUrl = utils.url.urlJoin(baseUrl, config.get('routeKeywords').tag, slugParam, 'json/');
     } else if (isAuthor(req)) {
-        baseUrl = utils.url.urlJoin(baseUrl, config.get('routeKeywords').author, slugParam, 'json');
+        baseUrl = utils.url.urlJoin(baseUrl, config.get('routeKeywords').author, slugParam, 'json/');
     } else {
-        baseUrl = utils.url.urlJoin(baseUrl, 'json');
+        baseUrl = utils.url.urlJoin(baseUrl, 'json/');
     }
 
     return baseUrl;
@@ -103,6 +103,10 @@ generateFeed = function generateFeed(data) {
         favicon: utils.url.urlFor({relativeUrl: 'favicon.png'}, true),
         items: []
     };
+
+    if (data.results.meta.pagination.next) {
+        feed.next_url = data.nextFeedUrl;
+    }
 
     data.results.posts.forEach(function forEach(post) {
         var itemUrl = utils.url.urlFor('post', {post: post, secure: data.secure}, true),
@@ -162,6 +166,7 @@ generate = function generate(req, res, next) {
         data.version = res.locals.safeVersion;
         data.siteUrl = utils.url.urlFor('home', {secure: req.secure}, true);
         data.feedUrl = utils.url.urlFor({relativeUrl: baseUrl, secure: req.secure}, true);
+        data.nextFeedUrl = utils.url.urlFor({relativeUrl: baseUrl, secure: req.secure}, true) + data.results.meta.pagination.next + '/';
         data.secure = req.secure;
 
         return getJSONFeed(req.originalUrl, data).then(function then(jsonFeed) {

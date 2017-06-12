@@ -229,6 +229,7 @@ function urlFor(context, data, absolute) {
     knownPaths = {
         home: '/',
         rss: '/rss/',
+        json: '/json/',
         api: API_PATH,
         sitemap_xsl: '/sitemap.xsl'
     };

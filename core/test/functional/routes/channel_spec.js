@@ -185,6 +185,14 @@ describe('Channel Routes', function () {
                         done();
                     });
             });
+
+            it('should get 301 redirect with CC=1year to /json/ from /feed.json', function (done) {
+                request.get('/feed.json/')
+                    .expect('Location', '/json/')
+                    .expect('Cache-Control', testUtils.cacheRules.year)
+                    .expect(301)
+                    .end(doEnd(done));
+            });
         });
 
         describe('Paged', function () {
