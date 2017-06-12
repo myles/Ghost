@@ -65,7 +65,7 @@ jsonFeedRouter = function jsonFeedRouter(channelConfig) {
     // @TODO move this to an RSS module
     var router = express.Router({mergeParams: true}),
         stack = [channelConfig, jsonFeedConfigMiddleware, jsonFeed],
-        baseRoute = '/feed.json';
+        baseRoute = '/json';
 
     router.get(baseRoute, stack);
     router.get(utils.url.urlJoin(baseRoute, ':page/'), stack);

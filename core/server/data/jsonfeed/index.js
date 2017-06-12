@@ -56,11 +56,11 @@ function getBaseUrl(req, slugParam) {
     var baseUrl = utils.url.getSubdir();
 
     if (isTag(req)) {
-        baseUrl = utils.url.urlJoin(baseUrl, config.get('routeKeywords').tag, slugParam, 'feed.json');
+        baseUrl = utils.url.urlJoin(baseUrl, config.get('routeKeywords').tag, slugParam, 'json');
     } else if (isAuthor(req)) {
-        baseUrl = utils.url.urlJoin(baseUrl, config.get('routeKeywords').author, slugParam, 'feed.json');
+        baseUrl = utils.url.urlJoin(baseUrl, config.get('routeKeywords').author, slugParam, 'json');
     } else {
-        baseUrl = utils.url.urlJoin(baseUrl, 'feed.json');
+        baseUrl = utils.url.urlJoin(baseUrl, 'json');
     }
 
     return baseUrl;

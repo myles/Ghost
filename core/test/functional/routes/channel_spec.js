@@ -158,15 +158,15 @@ describe('Channel Routes', function () {
             after(testUtils.teardown);
 
             it('should 301 redirect with CC=1year without slash', function (done) {
-                request.get('/feed.json')
-                    .expect('Location', '/feed.json/')
+                request.get('/json')
+                    .expect('Location', '/json/')
                     .expect('Cache-Control', testUtils.cacheRules.year)
                     .expect(301)
                     .end(doEnd(done));
             });
 
             it('should respond with 200 & CC=public', function (done) {
-                request.get('/feed.json/')
+                request.get('/json/')
                     .expect('Content-Type', 'application/json; charset=utf-8')
                     .expect('Cache-Control', testUtils.cacheRules.public)
                     .expect(200)
