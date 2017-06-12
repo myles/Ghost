@@ -4,12 +4,12 @@ var express = require('express'),
     errors  = require('../../errors'),
     i18n    = require('../../i18n'),
     rss     = require('../../data/xml/rss'),
-    feedJson = require('../../data/feedjson'),
+    jsonFeed = require('../../data/jsonfeed'),
     utils   = require('../../utils'),
     channelConfig = require('./channel-config'),
     renderChannel = require('./render-channel'),
     rssRouter,
-    feedJsonRouter,
+    jsonFeedRouter,
     channelRouter;
 
 function handlePageParam(req, res, next, page) {
@@ -56,15 +56,15 @@ rssRouter = function rssRouter(channelConfig) {
     return router;
 };
 
-feedJsonRouter = function feedJsonRouter(channelConfig) {
-    function feedJsonConfigMiddleware(req, res, next) {
-        req.channelConfig.isFeedJson = true;
+jsonFeedRouter = function jsonFeedRouter(channelConfig) {
+    function jsonFeedConfigMiddleware(req, res, next) {
+        req.channelConfig.isJSONFeed = true;
         next();
     }
 
     // @TODO move this to an RSS module
     var router = express.Router({mergeParams: true}),
-        stack = [channelConfig, feedJsonConfigMiddleware, feedJson],
+        stack = [channelConfig, jsonFeedConfigMiddleware, jsonFeed],
         baseRoute = '/feed.json';
 
     router.get(baseRoute, stack);
@@ -95,7 +95,7 @@ channelRouter = function router() {
         channelRouter.get(pageRoute, configChannel, renderChannel);
         channelRouter.param('page', handlePageParam);
         channelRouter.use(rssRouter(configChannel));
-        channelRouter.use(feedJsonRouter(configChannel));
+        channelRouter.use(jsonFeedRouter(configChannel));
 
         if (channel.editRedirect) {
             channelRouter.get('/edit/', function redirect(req, res) {

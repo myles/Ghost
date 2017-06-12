@@ -14,7 +14,7 @@ var crypto = require('crypto'),
     generate,
     generateFeed,
     generateTags,
-    getFeedJson,
+    getJSONFeed,
     feedCache = {};
 
 function isTag(req) {
@@ -66,7 +66,7 @@ function getBaseUrl(req, slugParam) {
     return baseUrl;
 }
 
-getFeedJson = function getFeedJson(path, data) {
+getJSONFeed = function getJSONFeed(path, data) {
     var dataHash = crypto.createHash('md5').update(JSON.stringify(data)).digest('hex');
 
     if (!feedCache[path] || feedCache[path].hash !== dataHash) {
@@ -128,12 +128,12 @@ generateFeed = function generateFeed(data) {
             htmlContent('img').attr('alt', post.title);
         }
 
-        filters.doFilter('feedjson.item', item, post).then(function them(item) {
+        filters.doFilter('jsonfeed.item', item, post).then(function them(item) {
             feed.items.push(item);
         });
     });
 
-    return filters.doFilter('feedjson.feed', feed).then(function then(feed) {
+    return filters.doFilter('jsonfeed.feed', feed).then(function then(feed) {
         return feed;
     });
 };
@@ -164,9 +164,9 @@ generate = function generate(req, res, next) {
         data.feedUrl = utils.url.urlFor({relativeUrl: baseUrl, secure: req.secure}, true);
         data.secure = req.secure;
 
-        return getFeedJson(req.originalUrl, data).then(function then(feedJson) {
+        return getJSONFeed(req.originalUrl, data).then(function then(jsonFeed) {
             res.set('Content-Type', 'application/json');
-            res.send(JSON.stringify(feedJson));
+            res.send(JSON.stringify(jsonFeed));
         });
     }).catch(handleError(next));
 };
