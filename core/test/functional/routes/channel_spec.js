@@ -284,6 +284,24 @@ describe('Channel Routes', function () {
                         .end(doEnd(done));
                 });
             });
+
+            describe('JSONFeed', function () {
+                it('show redirect without slash', function (done) {
+                    request.get('/json/2')
+                        .expect('Location', '/json/2/')
+                        .expect('Cache-Control', testUtils.cacheRules.year)
+                        .expect(301)
+                        .end(doEnd(done));
+                });
+
+                it('should respond with json', function (done) {
+                    request.get('/json/2/')
+                        .expect('Content-Type', /json/)
+                        .expect('Cache-Control', testUtils.cacheRules.public)
+                        .expect(200)
+                        .end(doEnd(done));
+                });
+            });
         });
     });
 

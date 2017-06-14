@@ -34,7 +34,7 @@
             "category", "dashboard", "feed", "ghost-admin", "login", "logout",
             "page", "pages", "post", "posts", "public", "register", "setup",
             "signin", "signout", "signup", "user", "users", "wp-admin", "wp-login"],
-        "protected": ["ghost", "rss", "amp"]
+        "protected": ["ghost", "rss", "json", "amp"]
     },
     "uploads": {
         "subscribers": {

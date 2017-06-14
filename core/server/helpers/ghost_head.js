@@ -154,6 +154,10 @@ module.exports = function ghost_head(options) {
             escapeExpression(metaData.blog.title)  + '" href="' +
             escapeExpression(metaData.rssUrl) + '" />');
 
+        head.push('<link rel="alternate" type="application/json" title="' +
+            escapeExpression(metaData.blog.title)  + '" href="' +
+            escapeExpression(metaData.jsonFeedUrl) + '" />');
+
         // no code injection for amp context!!!
         if (!_.includes(context, 'amp') && !_.isEmpty(codeInjection)) {
             head.push(codeInjection);

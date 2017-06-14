@@ -18,6 +18,7 @@ var config = require('../../config'),
     subscribePattern = new RegExp('^\\/' + config.get('routeKeywords').subscribe + '\\/'),
     ampPattern = new RegExp('\\/' + config.get('routeKeywords').amp + '\\/$'),
     rssPattern = new RegExp('^\\/rss\\/'),
+    jsonFeedPattern = new RegExp('^\\/json\\/'),
     homePattern = new RegExp('^\\/$');
 
 function setResponseContext(req, res, data) {
@@ -44,6 +45,11 @@ function setResponseContext(req, res, data) {
     // This is not currently used, as setRequestContext is not called for RSS feeds
     if (rssPattern.test(res.locals.relativeUrl)) {
         res.locals.context.push('rss');
+    }
+
+    // This is not currently used, as setRequestContext is not called for JSON feeds
+    if (jsonFeedPattern.test(res.locals.relativeUrl)) {
+        res.locals.context.push('json');
     }
 
     // Add context 'amp' to either post or page, if we have an `*/amp` route

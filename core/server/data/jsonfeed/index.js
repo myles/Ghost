@@ -143,7 +143,7 @@ generateFeed = function generateFeed(data) {
 };
 
 generate = function generate(req, res, next) {
-    // Initialize RSS
+    // Initialize JSON
     var pageParam = req.params.page !== undefined ? req.parmas.page : 1,
         slugParam = req.params.slug,
         baseUrl = getBaseUrl(req, slugParam);

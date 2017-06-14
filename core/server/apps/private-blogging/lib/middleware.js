@@ -53,6 +53,8 @@ privateBlogging = {
         // take care of rss and sitemap 404s
         if (req.path.lastIndexOf('/rss/', 0) === 0 ||
             req.path.lastIndexOf('/rss/') === req.url.length - 5 ||
+            req.path.lastIndexOf('/json/', 0) === 0 ||
+            req.path.lastIndexOf('/json/') === req.url.length - 5 ||
             (req.path.lastIndexOf('/sitemap', 0) === 0 && req.path.lastIndexOf('.xml') === req.path.length - 4)) {
             return next(new errors.NotFoundError({message: i18n.t('errors.errors.pageNotFound')}));
         } else if (req.url.lastIndexOf('/robots.txt', 0) === 0) {

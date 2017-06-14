@@ -14,7 +14,8 @@ var express = require('express'),
 
 function handlePageParam(req, res, next, page) {
     var pageRegex = new RegExp('/' + config.get('routeKeywords').page + '/(.*)?/'),
-        rssRegex = new RegExp('/rss/(.*)?/');
+        rssRegex = new RegExp('/rss/(.*)?/'),
+        jsonFeedRegex = new RegExp('/json/(.*)?/');
 
     page = parseInt(page, 10);
 
@@ -22,6 +23,8 @@ function handlePageParam(req, res, next, page) {
         // Page 1 is an alias, do a permanent 301 redirect
         if (rssRegex.test(req.url)) {
             return utils.redirect301(res, req.originalUrl.replace(rssRegex, '/rss/'));
+        } else if (jsonFeedRegex.test(req.url)) {
+            return utils.redirect301(res, req.originalUrl.replace(jsonFeedRegex, '/json/'));
         } else {
             return utils.redirect301(res, req.originalUrl.replace(pageRegex, '/'));
         }
@@ -62,13 +65,14 @@ jsonFeedRouter = function jsonFeedRouter(channelConfig) {
         next();
     }
 
-    // @TODO move this to an RSS module
+    // @TODO move this to an JSON module
     var router = express.Router({mergeParams: true}),
         stack = [channelConfig, jsonFeedConfigMiddleware, jsonFeed],
         baseRoute = '/json/';
 
     router.get(baseRoute, stack);
     router.get(utils.url.urlJoin(baseRoute, ':page/'), stack);
+
     router.get('/feed.json/', function redirectToJSONFeed(req, res) {
         return utils.redirect301(res, utils.url.urlJoin(utils.url.getSubdir(), req.baseUrl, baseRoute));
     });
